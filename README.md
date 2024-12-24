@@ -1,0 +1,1 @@
+# SafeCryptoStocks_Platform
