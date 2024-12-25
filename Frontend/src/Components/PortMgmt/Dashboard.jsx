@@ -6,24 +6,17 @@ import { IoMdTrendingUp, IoMdTrendingDown } from 'react-icons/io';
 import { BiNews } from 'react-icons/bi';
 import { useUser } from '../UserContext'; // Import useUser hook
 
-
 const Dashboard = () => {
   const { user } = useUser(); // Access user data from context
 
-
-  // useEffect(() => {
-  //   // Retrieve the entire user object from localStorage
-  //   const storedUser = JSON.parse(localStorage.getItem('user'));
-  //   if (storedUser) {
-  //     setUser(storedUser); // Set the user state with the retrieved user object
-  //   }
-  // }, []);
   const [trendingCoins, setTrendingCoins] = useState([]);
   const [topCoins, setTopCoins] = useState([]);
+  const [cryptoNews, setCryptoNews] = useState([]); // New state for news
 
   useEffect(() => {
     fetchTrendingCoins();
     fetchTop50Coins();
+    fetchCryptoNews(); // Fetch news when the component mounts
   }, []);
 
   const fetchTrendingCoins = async () => {
@@ -49,6 +42,19 @@ const Dashboard = () => {
       setTopCoins(data); // Adjust key if API returns differently
     } catch (error) {
       console.error('Error fetching top 50 coins:', error);
+    }
+  };
+
+  const fetchCryptoNews = async () => {
+    try {
+      const response = await fetch('http://localhost:8005/auth/dash/crypto-news', {
+        method: 'GET',
+        credentials: 'same-origin', // This ensures cookies are sent with the request
+      });
+      const data = await response.json();
+      setCryptoNews(data); // Set the fetched news to state
+    } catch (error) {
+      console.error('Error fetching cryptocurrency news:', error);
     }
   };
 
@@ -119,27 +125,29 @@ const Dashboard = () => {
               ))}
             </tbody>
           </table>
-
         </section>
+
         {/* Latest News Section */}
         <section className="latest-news">
           <h3>
             <BiNews style={{ color: '#007bff' }} /> Latest News
           </h3>
           <div>
-            <p>
-              Trump is launching a cryptocurrency platform, and we have no idea what it does. <a href="/news">Read More</a>
-            </p>
-            <p>
-              The number of bitcoin millionaires has increased by 11% in the last year as the cryptocurrency rallies.
-            </p>
+            {cryptoNews.length > 0 ? (
+              cryptoNews.map((article, index) => (
+                <p key={index}>
+                  <a href={article.url} target="_blank" rel="noopener noreferrer">{article.title}</a><br />
+                  {article.description}
+                </p>
+              ))
+            ) : (
+              <p>No news available at the moment.</p>
+            )}
           </div>
         </section>
-
       </main>
     </div>
   );
 };
 
 export default Dashboard;
-
