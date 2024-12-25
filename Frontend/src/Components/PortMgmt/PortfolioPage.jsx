@@ -5,17 +5,62 @@ import BuyStock from "./BuyStock";
 import SellStock from "./SellStock";
 import { useUser } from '../UserContext'; // Import useUser hook
 
+// Edit Portfolio Dialog Component
+const EditPortfolioDialog = ({ portfolio, onUpdate, onClose }) => {
+  const [portfolioName, setPortfolioName] = useState(portfolio.portfolioName);
+  const [investmentAgenda, setInvestmentAgenda] = useState(portfolio.investmentAgenda);
+
+  const handleUpdate = () => {
+    const updatedPortfolio = {
+      portfolioName,
+      investmentAgenda
+    };
+    onUpdate(updatedPortfolio); // Call the parent update handler
+    onClose(); // Close the dialog
+  };
+
+  return (
+    <div className="edit-dialog">
+      <h3>Edit Portfolio</h3>
+      <label>
+        Portfolio Name:
+        <input
+          type="text"
+          value={portfolioName}
+          onChange={(e) => setPortfolioName(e.target.value)}
+        />
+      </label>
+      <label>
+        Investment Agenda:
+        <textarea
+          value={investmentAgenda}
+          onChange={(e) => setInvestmentAgenda(e.target.value)}
+        />
+      </label>
+      <div className="dialog-actions">
+        <button onClick={handleUpdate}>Update</button>
+        <button onClick={onClose}>Close</button>
+      </div>
+    </div>
+  );
+};
+
+const DeleteConfirmationDialog = ({ onDeleteConfirm, onClose }) => (
+  <div className="delete-confirmation-dialog">
+    <h3>Are you sure you want to delete this portfolio?</h3>
+    <div className="dialog-actions">
+      <button onClick={onDeleteConfirm}>Yes</button>
+      <button onClick={onClose}>No</button>
+    </div>
+  </div>
+);
+
 const PortfolioCard = ({ portfolio, onEdit, onDelete, onViewStocks }) => (
   <li className="portfolio-card">
     <div className="card-actions">
-      <button onClick={() => onEdit(portfolio)} className="edit-portfolio">
-        📝
+      <button onClick={() => onEdit(portfolio)} className="fas fa-edit">
       </button>
-      <button
-        onClick={() => onDelete(portfolio.portfolioId)}
-        className="delete-portfolio"
-      >
-        🗑️
+      <button onClick={() => onDelete(portfolio)} className="fas fa-trash">
       </button>
     </div>
     <h3 className="portfolio-name">{portfolio.portfolioName}</h3>
@@ -23,10 +68,7 @@ const PortfolioCard = ({ portfolio, onEdit, onDelete, onViewStocks }) => (
     <p className="portfolio-id">
       Portfolio ID: <strong>{portfolio.portfolioId}</strong>
     </p>
-    <button
-      onClick={() => onViewStocks(portfolio.portfolioId)}
-      className="view-stocks"
-    >
+    <button onClick={() => onViewStocks(portfolio.portfolioId)} className="view-stocks">
       View Stocks
     </button>
   </li>
@@ -47,8 +89,6 @@ const StockTable = ({ stocks }) => {
   };
 
   const handleSellSuccess = () => {
-    // Refresh or re-fetch the stock list after successful sale
-    // This can involve calling a function passed from a parent component or triggering a state update
     console.log("Stock sold successfully");
   };
 
@@ -82,23 +122,17 @@ const StockTable = ({ stocks }) => {
                   {stock.stockSymbol}
                 </td>
                 <td>{stock.noOfShares}</td>
-                <td
-                  className={stock.percentChange24h >= 0 ? "positive" : "negative"}
-                >
+                <td className={stock.percentChange24h >= 0 ? "positive" : "negative"}>
                   {stock.percentChange24h}%
                 </td>
                 <td>${stock.holdings.toFixed(2)}</td>
                 <td>${stock.stockcurrentPrice.toFixed(2)}</td>
                 <td>${stock.initialInvestment.toFixed(2)}</td>
-                {/* <td>${stock.profitLoss}</td> */}
                 <td className={stock.profitLoss >= 0 ? "positive" : "negative"}>
                   {stock.profitLoss.toFixed(2)}
                 </td>
                 <td>
-                  <button
-                    className="sell-stock"
-                    onClick={() => handleSellClick(stock)}
-                  >
+                  <button className="sell-stock" onClick={() => handleSellClick(stock)}>
                     Sell
                   </button>
                 </td>
@@ -133,6 +167,9 @@ const PortfolioPage = () => {
   const [currentPortfolioId, setCurrentPortfolioId] = useState(null);
   const [currentBalance, setCurrentBalance] = useState(0);
   const [profitLoss, setProfitLoss] = useState(0);
+  const [isEditing, setIsEditing] = useState(false); // State to track if editing is in progress
+  const [isDeleting, setIsDeleting] = useState(false); // State to track if delete dialog is open
+  const [selectedPortfolio, setSelectedPortfolio] = useState(null); // Store selected portfolio for editing or deletion
 
   useEffect(() => {
     if (user) {
@@ -174,15 +211,14 @@ const PortfolioPage = () => {
     }
   };
 
-  const handleEditPortfolio = async (portfolio) => {
-    // Logic for editing portfolio
-    const updatedPortfolio = {
-      portfolioName: prompt('Enter updated portfolio name:', portfolio.portfolioName),
-      investmentAgenda: prompt('Enter updated investment agenda:', portfolio.investmentAgenda),
-    };
+  const handleEditPortfolio = (portfolio) => {
+    setSelectedPortfolio(portfolio);
+    setIsEditing(true); // Open the dialog for editing
+  };
 
+  const handleUpdatePortfolio = async (updatedPortfolio) => {
     try {
-      const response = await fetch(`http://localhost:8005/auth/portfolios/update/${portfolio.portfolioId}`, {
+      const response = await fetch(`http://localhost:8005/auth/portfolios/update/${selectedPortfolio.portfolioId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedPortfolio),
@@ -191,6 +227,8 @@ const PortfolioPage = () => {
       if (response.ok) {
         alert('Portfolio updated successfully!');
         fetchPortfolios(user.id); // Refresh the list
+        setIsEditing(false); // Close the dialog
+        setSelectedPortfolio(null); // Clear selected portfolio
       } else {
         alert('Failed to update portfolio.');
       }
@@ -200,21 +238,19 @@ const PortfolioPage = () => {
   };
 
   const handleDeletePortfolio = async (portfolioId) => {
-    if (window.confirm("Are you sure you want to delete this portfolio?")) {
-      try {
-        const response = await fetch(`http://localhost:8005/auth/portfolios/delete/${portfolioId}`, {
-          method: "DELETE",
-        });
-        if (response.ok) {
-          setPortfolios(
-            portfolios.filter((p) => p.portfolioId !== portfolioId)
-          );
-        } else {
-          alert("Failed to delete portfolio.");
-        }
-      } catch (error) {
-        console.error("Error deleting portfolio:", error);
+    try {
+      const response = await fetch(`http://localhost:8005/auth/portfolios/delete/${portfolioId}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setPortfolios(portfolios.filter((p) => p.portfolioId !== portfolioId));
+        setIsDeleting(false); // Close the confirmation dialog
+        setSelectedPortfolio(null); // Clear selected portfolio
+      } else {
+        alert("Failed to delete portfolio.");
       }
+    } catch (error) {
+      console.error("Error deleting portfolio:", error);
     }
   };
 
@@ -222,6 +258,11 @@ const PortfolioPage = () => {
     setCurrentPortfolioId(portfolioId);
     fetchStocks(portfolioId);
     fetchPortfolioSummary(portfolioId);
+  };
+
+  const handleOpenDeleteDialog = (portfolio) => {
+    setSelectedPortfolio(portfolio);
+    setIsDeleting(true); // Open the delete confirmation dialog
   };
 
   return (
@@ -233,9 +274,7 @@ const PortfolioPage = () => {
             <h2>My Portfolios</h2>
             <button
               className="btn add-portfolio"
-              onClick={() =>
-                (window.location.href = `/create-portfolio?userId=${user.id}`) // Replace userId with context value
-              }
+              onClick={() => (window.location.href = `/create-portfolio?userId=${user.id}`)}
             >
               +
             </button>
@@ -246,7 +285,7 @@ const PortfolioPage = () => {
                 key={portfolio.portfolioId}
                 portfolio={portfolio}
                 onEdit={handleEditPortfolio}
-                onDelete={handleDeletePortfolio}
+                onDelete={handleOpenDeleteDialog} // Open delete dialog
                 onViewStocks={handleViewStocks}
               />
             ))}
@@ -267,9 +306,7 @@ const PortfolioPage = () => {
           </div>
           <button
             className="btn buy-stocks"
-            onClick={() =>
-              (window.location.href = `/buy-stock?portfolioId=${currentPortfolioId}`)
-            }
+            onClick={() => (window.location.href = `/buy-stock?portfolioId=${currentPortfolioId}`)}
           >
             BUY STOCKS
           </button>
@@ -277,6 +314,23 @@ const PortfolioPage = () => {
           <StockTable stocks={stocks} />
         </section>
       </main>
+
+      {/* Edit Portfolio Dialog */}
+      {isEditing && selectedPortfolio && (
+        <EditPortfolioDialog
+          portfolio={selectedPortfolio}
+          onUpdate={handleUpdatePortfolio}
+          onClose={() => setIsEditing(false)}
+        />
+      )}
+
+      {/* Delete Portfolio Confirmation Dialog */}
+      {isDeleting && selectedPortfolio && (
+        <DeleteConfirmationDialog
+          onDeleteConfirm={() => handleDeletePortfolio(selectedPortfolio.portfolioId)}
+          onClose={() => setIsDeleting(false)}
+        />
+      )}
     </div>
   );
 };
