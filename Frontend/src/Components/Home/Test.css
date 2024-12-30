@@ -117,33 +117,6 @@ a {
   font-size: 1.2rem;
   margin-bottom: 30px;
   font-weight: bold;
-
-  border-right: 4px solid #fff;
-  /* Blinking cursor effect */
-  width: 0;
-  animation: typing 4s steps(40) 1s forwards, blink 0.75s step-end infinite;
-  /* Typing and blinking cursor */
-
-  /* Enhanced text visibility */
-  position: relative;
-  /* For absolute positioning of background */
-  padding: 10px 20px;
-  /* Add some padding for better look */
-  background-color: rgba(0, 0, 0, 0.5);
-  /* Semi-transparent black background */
-  border: 2px solid #fff;
-  /* White border around the text */
-  border-radius: 5px;
-  /* Optional: rounded corners */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
-  /* Soft shadow behind the text */
-}
-
-/* Create the blinking effect for the cursor */
-@keyframes blink {
-  50% {
-    border-color: transparent;
-  }
 }
 
 .hero-content .btn {
@@ -155,7 +128,6 @@ a {
   font-weight: bold;
   transition: transform 0.3s ease;
 }
-
 
 .hero-content .btn:hover {
   transform: scale(1.1);

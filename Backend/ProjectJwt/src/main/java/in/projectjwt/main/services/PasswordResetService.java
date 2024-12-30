@@ -28,6 +28,7 @@ public class PasswordResetService {
         Optional<User> userOpt = userRepository.findByEmail(email);
         User user = userOpt.orElseThrow(() -> new InvalidOTPException("User with email " + email + " not found"));
         user.setResetState(PasswordResetState.RESET_REQUESTED);
+        user.setResetState(PasswordResetState.EMAIL_VERIFIED);
         // Generate OTP
         String otp = generateOTP();
 
@@ -40,7 +41,7 @@ public class PasswordResetService {
 
         // Send OTP email
         emailService.sendOtpEmail(user.getEmail(), otp);
-        user.setResetState(PasswordResetState.EMAIL_VERIFIED);
+        
 
         return "Password reset link sent to " + email;
     }
