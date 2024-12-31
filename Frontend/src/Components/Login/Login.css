@@ -40,11 +40,11 @@
 .input-group {
   position: relative;
   margin-bottom: 15px;
-  padding: 0px 20px 0px 0px;
+  padding: 0px 0px 0px 0px;
 }
 
 .input-group input {
-  width: 80%;
+  width: 95%;
   padding: 10px 40px 10px 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -69,6 +69,8 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  margin-bottom: 15px;
+
 }
 
 .login-button:hover {
@@ -78,6 +80,7 @@
 .register-link {
   color: #79e8ef;
   text-decoration: none;
+
 }
 
 .register-link:hover {
@@ -88,6 +91,7 @@
 .forgot-password-link {
   color: #79e8ef;
   text-decoration: none;
+
 }
 
 .forgot-password-link:hover {

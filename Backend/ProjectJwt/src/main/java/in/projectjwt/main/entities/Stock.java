@@ -21,19 +21,19 @@ public class Stock {
     
 
     @Column(nullable = false)
-    private double holdings;  // Quantity of stock held
+    private double holdings=0;  // Quantity of stock held
 
     @Column(nullable = false)
-    private double avgBuyPrice;  // Average buying price per stock
+    private double avgBuyPrice=0;  // Average buying price per stock
 
     @Column
-    private double initialInvestment;  // Total cost of buying all holdings (calculated dynamically)
+    private double initialInvestment=0;  // Total cost of buying all holdings (calculated dynamically)
 
     @Column
-    private double profitLoss;  // Calculated profit or loss (calculated dynamically)
+    private double profitLoss=0;  // Calculated profit or loss (calculated dynamically)
 
     @Column
-    private double currentBalance;  // Current balance based on market price (calculated dynamically)
+    private double currentBalance=10000;  // Current balance based on market price (calculated dynamically)
 
     @Column(nullable = false)
     private double percentChange24h;  // Percentage change in price in 24 hours
@@ -127,21 +127,20 @@ public class Stock {
 
     // Calculates the initial investment
     public double getInitialInvestment() {
-        initialInvestment = holdings * avgBuyPrice;
-        return initialInvestment;
+        return holdings * avgBuyPrice;
     }
     public void setInitialInvestment(double initialInvestment) {
         this.initialInvestment=initialInvestment;
         
     }
     public double getProfitLoss() {
-        profitLoss = (stockcurrentPrice - avgBuyPrice) * holdings;  // Profit or loss calculation
-        return profitLoss;
+        //profitLoss = (stockcurrentPrice - avgBuyPrice) * holdings;  // Profit or loss calculation
+        return (stockcurrentPrice - avgBuyPrice) * noOfShares;  // Profit or loss calculation
     }
 
     public double getCurrentBalance() {
-        currentBalance = holdings * stockcurrentPrice;  // Current balance calculation
-        return currentBalance;
+        //currentBalance = holdings * stockcurrentPrice;  // Current balance calculation
+        return stockcurrentPrice * noOfShares;  // Current balance based on market price
     }
 
     public double getPercentChange24h() {
@@ -167,11 +166,17 @@ public class Stock {
      * Method to update the average buy price after a new purchase.
      * Formula: (Old Total Cost + New Purchase Cost) / (Old Holdings + New Holdings)
      */
-    public void updateAvgBuyPrice(double newPurchasePrice, double newHoldings) {
-        double oldTotalCost = getTotalCost();  // Calculate old total cost
-        double newTotalCost = newPurchasePrice * newHoldings;  // New purchase cost
-        this.avgBuyPrice = (oldTotalCost + newTotalCost) / (holdings + newHoldings);  // Updated average price
-        this.holdings += newHoldings;  // Update total holdings
+//    public void updateAvgBuyPrice(double newPurchasePrice, double newHoldings) {
+//        double oldTotalCost = getTotalCost();  // Calculate old total cost
+//        double newTotalCost = newPurchasePrice * newHoldings;  // New purchase cost
+//        this.avgBuyPrice = (oldTotalCost + newTotalCost) / (holdings + newHoldings);  // Updated average price
+//        this.holdings += newHoldings;  // Update total holdings
+//    }
+ // Update the average buy price after a new purchase
+    public void updateAvgBuyPrice(double newPurchasePrice, int newNoOfShares) {
+        double totalCost = (avgBuyPrice * noOfShares) + (newPurchasePrice * newNoOfShares);
+        noOfShares += newNoOfShares;
+        this.avgBuyPrice = totalCost / noOfShares;
     }
 
     // Helper method to calculate the total cost (used for updating avg buy price)

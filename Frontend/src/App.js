@@ -22,8 +22,9 @@ import Profile from './Components/ProfilePage/Profile';
 import { UserProvider } from './Components/UserContext';
 import UnauthorizedPage from './UnauthorizedPage';
 import MarketChart from './Components/PortMgmt/MarketChart';
-import Test from './Components/Home/Test';
 import { ResetStateProvider } from './Components/ResetStateProvider';
+
+
 
 const App = () => {
   return (
@@ -51,7 +52,7 @@ const App = () => {
             <Route path="/budget" element={<Budget />} />
             <Route path="/learn" element={<Learn />} />
             <Route path="/chart" element={<MarketChart />} />
-            <Route path="/test" element={<Test />} />
+
             <Route path="/profile" element={<Profile />} />
 
             {/* Catch-all for Unauthorized access */}

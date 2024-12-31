@@ -57,24 +57,36 @@ public class StockService {
         Stock existingStock = stockRepository.findByPortfolioAndStockSymbol(portfolio, stockSymbol);
 
         if (existingStock != null) {
-            // Update existing stock: Buying more shares of the existing stock
+        	// Update existing stock
             double totalShares = existingStock.getNoOfShares() + noOfShares;
-            double newAvgBuyPrice = (existingStock.getAvgBuyPrice() * existingStock.getNoOfShares() + purchasePrice) / totalShares;
-            double newHoldings = existingStock.getHoldings() + purchasePrice;
-
+            existingStock.updateAvgBuyPrice(currentPrice, noOfShares);
             existingStock.setNoOfShares((int) totalShares);
-            existingStock.setAvgBuyPrice(newAvgBuyPrice);
-            existingStock.setHoldings(newHoldings);
-            existingStock.setStockcurrentPrice(currentPrice); // Update current price
-            System.out.println("Current price updated");
+            existingStock.setStockcurrentPrice(currentPrice);  // Update current price
             existingStock.setStockImg(imageUrl);
             existingStock.setPercentChange24h(priceChange24h);
 
             // Save the updated stock
             stockRepository.save(existingStock);
-         // Send email notification
             emailService.sendStockPurchaseEmail(portfolio.getUser().getEmail(), portfolio.getUser().getFullName(), stockSymbol, noOfShares, purchasePrice);
             return existingStock;
+            // Update existing stock: Buying more shares of the existing stock
+//            double totalShares = existingStock.getNoOfShares() + noOfShares;
+//            double newAvgBuyPrice = (existingStock.getAvgBuyPrice() * existingStock.getNoOfShares() + purchasePrice) / totalShares;
+//            double newHoldings = existingStock.getHoldings() + purchasePrice;
+//
+//            existingStock.setNoOfShares((int) totalShares);
+//            existingStock.setAvgBuyPrice(newAvgBuyPrice);
+//            existingStock.setHoldings(newHoldings);
+//            existingStock.setStockcurrentPrice(currentPrice); // Update current price
+//            System.out.println("Current price updated");
+//            existingStock.setStockImg(imageUrl);
+//            existingStock.setPercentChange24h(priceChange24h);
+//
+//            // Save the updated stock
+//            stockRepository.save(existingStock);
+//         // Send email notification
+//            emailService.sendStockPurchaseEmail(portfolio.getUser().getEmail(), portfolio.getUser().getFullName(), stockSymbol, noOfShares, purchasePrice);
+//            return existingStock;
         } else {
             // Create a new stock entry if it doesn't exist in the portfolio
             Stock newStock = new Stock();
@@ -82,7 +94,7 @@ public class StockService {
             newStock.setStockcurrentPrice(currentPrice);
             System.out.println("Current price stored");
             newStock.setHoldings(purchasePrice);  // Holdings are initialized with purchase price
-            newStock.setInitialInvestment(purchasePrice); // Initial investment is the purchase price
+//            newStock.setInitialInvestment(purchasePrice); // Initial investment is the purchase price
             newStock.setAvgBuyPrice(currentPrice);  // Set initial avg buy price as the current price
             newStock.setNoOfShares(noOfShares);
             newStock.setPercentChange24h(priceChange24h); // Set the price change in 24h (from the API)
@@ -91,9 +103,10 @@ public class StockService {
 
             // Save the stock to the repository
          // Send email notification
+            stockRepository.save(newStock);
             emailService.sendStockPurchaseEmail(portfolio.getUser().getEmail(), portfolio.getUser().getFullName(), stockSymbol, noOfShares, purchasePrice);
             System.out.println("Email send to : "+portfolio.getUser().getEmail());
-            return stockRepository.save(newStock);
+            return newStock;
         }
     }
     public List<Stock> getStocksByPortfolio(Long portfolioId) {

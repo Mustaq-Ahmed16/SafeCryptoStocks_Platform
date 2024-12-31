@@ -103,7 +103,7 @@ const StockTable = ({ stocks }) => {
             <th>24h%</th>
             <th>Holdings</th>
             <th>Current Price</th>
-            <th>Initial Investment</th>
+            <th>Avg Buy Price</th>
             <th>Profit/Loss</th>
             <th>Actions</th>
           </tr>
@@ -127,9 +127,9 @@ const StockTable = ({ stocks }) => {
                 </td>
                 <td>${stock.holdings.toFixed(2)}</td>
                 <td>${stock.stockcurrentPrice.toFixed(2)}</td>
-                <td>${stock.initialInvestment.toFixed(2)}</td>
+                <td>${stock.avgBuyPrice.toFixed(2)}</td>
                 <td className={stock.profitLoss >= 0 ? "positive" : "negative"}>
-                  {stock.profitLoss.toFixed(2)}
+                  {stock.profitLoss.toFixed(4)}
                 </td>
                 <td>
                   <button className="sell-stock" onClick={() => handleSellClick(stock)}>

@@ -63,7 +63,7 @@ const Market = () => {
       <div className="container">
 
         <div className="header">
-          <h1>Top Cryptocurrencies by Market Cap</h1>
+          <h1 style={{ color: "black" }}>Top Cryptocurrencies by Market Cap</h1>
           <div className="search-bar">
             <input
               type="text"

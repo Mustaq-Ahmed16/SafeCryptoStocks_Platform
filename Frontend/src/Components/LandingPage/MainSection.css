@@ -1,9 +1,4 @@
 /* Reset and Global Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
 
 body {
   font-family: 'Roboto', sans-serif;
@@ -17,7 +12,7 @@ a {
 }
 
 /* Navbar Styles */
-.navbar {
+.navbarr {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -30,17 +25,17 @@ a {
   transition: background-color 0.3s ease;
 }
 
-.navbar:hover {
+.navbarr:hover {
   background-color: antiquewhite;
 }
 
-.navbar .logo {
+.navbarr .logo {
   font-size: 2rem;
   font-weight: bold;
   color: black;
 }
 
-.navbar .auth-buttons a {
+.navbarr .auth-buttons a {
   margin-left: 20px;
   padding: 12px 20px;
   color: #fff;
@@ -51,7 +46,7 @@ a {
   font-weight: bold;
 }
 
-.navbar .auth-buttons a:hover {
+.navbarr .auth-buttons a:hover {
   background-color: blue;
 }
 
@@ -194,6 +189,7 @@ a {
   font-size: 2.5rem;
   margin-bottom: 20px;
   animation: fadeIn 2s ease-out;
+  color: white;
 }
 
 .market-overview {
@@ -254,6 +250,7 @@ a {
   font-size: 2.5rem;
   margin-bottom: 20px;
   animation: fadeIn 2s ease-out;
+  color: white;
 }
 
 /* Footer Styles */

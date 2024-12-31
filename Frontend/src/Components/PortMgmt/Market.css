@@ -27,10 +27,13 @@ body {
 
 }
 
+
+
 h1 {
-  margin: 0;
+  margin: 10px;
   font-size: 22px;
   color: white;
+
 }
 
 .search-input {

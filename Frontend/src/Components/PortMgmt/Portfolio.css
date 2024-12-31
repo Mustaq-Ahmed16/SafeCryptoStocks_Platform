@@ -101,18 +101,19 @@ body {
 }
 
 .buy-stocks {
-  background-color: var(--primary-color, #007bff);
-  color: #fff;
+  background: linear-gradient(90deg, #020c5a, #0008fa);
+  color: white;
+  padding: 10px 15px;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 40px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin: 0 5px;
 }
 
 .buy-stocks:hover {
-  background-color: var(--primary-dark, #0056b3);
-  transform: scale(1.05);
+  box-shadow: 0 0 10px #020c5a;
+  background: white;
+  color: #020c5a;
 }
 
 .assets-table {
@@ -235,41 +236,37 @@ body {
 }
 
 /* Style for View Stocks button */
-button.view-stocks {
-  background-color: #007BFF;
-  /* Blue color */
+.view-stocks {
+  background: linear-gradient(90deg, #020c5a, #0008fa);
   color: white;
-  /* White text */
+  padding: 10px 15px;
   border: none;
-  padding: 10px 20px;
-  font-size: 16px;
+  border-radius: 40px;
   cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
+  margin: 0 5px;
 }
 
-button.view-stocks:hover {
-  background-color: #0056b3;
-  /* Darker blue on hover */
+.view-stocks:hover {
+  background: white;
+
+
 }
 
 /* Style for Sell button */
 button.sell-stock {
-  background-color: #007BFF;
-  /* Blue color */
+  background: linear-gradient(90deg, #020c5a, #0008fa);
   color: white;
-  /* White text */
+  padding: 10px 20px;
   border: none;
-  padding: 8px 15px;
-  font-size: 14px;
+  border-radius: 10px;
   cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
+  margin: 0 5px;
 }
 
 button.sell-stock:hover {
-  background-color: #0056b3;
-  /* Darker blue on hover */
+  box-shadow: 0 0 10px #020c5a;
+  background: white;
+  color: #020c5a;
 }
 
 /* Style for portfolio cards */
@@ -576,8 +573,4 @@ button:hover {
 
 .dialog-actions button:last-child:hover {
   background-color: #0056b3;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> c5b5b953593e612b479889d7e1be0f26d8b89c9c

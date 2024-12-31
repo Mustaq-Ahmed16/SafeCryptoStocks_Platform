@@ -13,11 +13,13 @@
   width: 1460px;
 }
 
-.learn-text h1 {
+.learn-header .learn-text h1 {
   font-size: 2.5rem;
-  margin: 0;
+  margin: 0px;
   color: #020c5a;
+
 }
+
 
 .learn-text p {
   font-size: 1.2rem;
@@ -26,7 +28,7 @@
 
 .learn-image img {
   width: 200px;
-  height: 150px;
+  height: 120px;
   object-fit: cover;
   border-radius: 8px;
   box-shadow: 0 0 10px #020c5a;
@@ -71,6 +73,11 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  display: grid;
+  /* flex-direction: row; */
+  grid-template-columns: repeat(5, 1fr);
+  /* gap: 0px; */
+  /* justify-content: space-between; */
 }
 
 .recent-articles li {

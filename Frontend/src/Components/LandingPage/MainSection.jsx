@@ -48,7 +48,7 @@ function MainSection() {
   return (
     <div className="App">
       {/* Navbar */}
-      <nav className="navbar">
+      <nav className="navbarr">
         <div className="logo">
           <a href="/">SafeCryptoStocks</a>
         </div>
