@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './CreatePortfolio.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const CreatePortfolio = ({ onPortfolioCreated }) => {
   const [portfolioName, setPortfolioName] = useState('');
   const [investmentAgenda, setInvestmentAgenda] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
+  // Check if user is authenticated on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // Redirect to login if no token is found
+      navigate('/login');
+    }
+  }, [navigate]);
+
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const userId = queryParams.get('userId');

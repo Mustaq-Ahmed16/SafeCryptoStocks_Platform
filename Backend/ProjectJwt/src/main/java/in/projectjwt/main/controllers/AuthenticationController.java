@@ -29,6 +29,7 @@ import in.projectjwt.main.repositories.UserRepository;
 import in.projectjwt.main.services.AuthenticationService;
 import in.projectjwt.main.services.JwtService;
 import in.projectjwt.main.services.PasswordResetService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
@@ -195,6 +196,29 @@ public class AuthenticationController {
         response.put("user", userDetails);
 
         return ResponseEntity.ok(response);
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, Object>> logout(HttpServletRequest request) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            // Retrieve the JWT token from the Authorization header
+            String token = request.getHeader("Authorization");
+
+            // If token exists, we can optionally blacklist it, invalidate it, or just ensure it's no longer used
+            if (token != null && token.startsWith("Bearer ")) {
+                token = token.replace("Bearer ", "");
+                authenticationService.invalidateToken(token);  // Call to blacklist or perform cleanup
+            }
+            response.put("token", token);
+            response.put("success", true);
+            response.put("message", "Logout successful");
+            return ResponseEntity.ok(response); // HTTP 200 OK
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "An error occurred during logout");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response); // HTTP 500 Internal Server Error
+        }
     }
 
 }

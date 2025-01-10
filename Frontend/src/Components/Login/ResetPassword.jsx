@@ -93,7 +93,7 @@ const ResetPassword = () => {
             <span className="icon">🔒</span>
           </div>
           {passwordError && <p className="error-message">{passwordError}</p>}
-          <div className="input-group">
+          <div className="rst-input-group">
             <input
               type="password"
               placeholder="Confirm New Password"

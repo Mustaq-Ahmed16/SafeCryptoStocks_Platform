@@ -13,6 +13,12 @@ function UnauthorizedPage() {
       navigate('/');  // Redirect to the email verification page
     }, 3000);  // Redirect after 3 seconds
   }, [navigate]);
+  const token = localStorage.getItem('token');  // Adjust this based on where you store the JWT token
+
+  // Redirect to unauthorized page if user is not authenticated
+  if (!token) {
+    return <Navigate to="/unauthorized" />;
+  }
 
   return (
     <Container

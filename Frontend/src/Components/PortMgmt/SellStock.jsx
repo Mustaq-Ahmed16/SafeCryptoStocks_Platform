@@ -1,9 +1,10 @@
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./SellStock.css";
 
 // Import icons (ensure you have the necessary icon images or use a library like react-icons)
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const SellStock = ({ portfolioId, stockId, stockSymbol, noOfShares, onClose, onSell }) => {
   const [quantitySell, setQuantitySell] = useState(0);
@@ -11,12 +12,23 @@ const SellStock = ({ portfolioId, stockId, stockSymbol, noOfShares, onClose, onS
   const [showDialog, setShowDialog] = useState(false); // State to track dialog visibility
   const [dialogMessage, setDialogMessage] = useState("");
   const [dialogType, setDialogType] = useState(""); // 'success' or 'error'
+  const [loading, setLoading] = useState(false); // Loading state for processing
+  const navigate = useNavigate();
+  // Check if user is authenticated on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // Redirect to login if no token is found
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const handleSell = async () => {
     if (quantitySell > noOfShares) {
       setError("You cannot sell more shares than you own.");
       return;
     }
+    setLoading(true); // Start loading
     try {
       // Make API call to sell stock
       const response = await fetch(
@@ -47,7 +59,10 @@ const SellStock = ({ portfolioId, stockId, stockSymbol, noOfShares, onClose, onS
       setDialogMessage("Error connecting to the server. Please try again.");
       setDialogType("error");
     }
-    setShowDialog(true);
+    finally {
+      setLoading(false); // End loading
+      setShowDialog(true); // Show success/error dialog
+    }
   };
 
   return (
@@ -67,7 +82,16 @@ const SellStock = ({ portfolioId, stockId, stockSymbol, noOfShares, onClose, onS
         {error && <div className="error">{error}</div>}
         <div className="actions">
           <button onClick={onClose}>Cancel</button>
-          <button onClick={handleSell}>Confirm Sell</button>
+          <button onClick={handleSell} disabled={loading}>
+            {loading ? (
+              <>
+                Processing...
+              </>
+            ) : (
+              "Confirm Sell"
+            )}
+          </button>
+
         </div>
       </div>
       {/* Success/Error Dialog */}

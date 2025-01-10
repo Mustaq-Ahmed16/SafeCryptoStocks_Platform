@@ -18,7 +18,7 @@ const Navbar = () => {
       <div className="auth-buttons">
         <a href="/profile"><button className="btn-get-started">MY PROFILE</button></a>
 
-        <a href="/"><button className="btn-get-started">LOG OUT</button></a>
+        <a href="/logout"><button className="btn-get-started">LOG OUT</button></a>
       </div>
 
     </nav>

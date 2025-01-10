@@ -124,7 +124,7 @@ function MainSection() {
 
       {/* Footer */}
       <footer className="footer">
-        <p>&copy; 2024 SafeCryptoStocks. All rights reserved.</p>
+        <p>&copy; 2025 SafeCryptoStocks. All rights reserved.</p>
       </footer>
     </div>
   );

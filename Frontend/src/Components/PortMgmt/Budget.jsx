@@ -3,6 +3,7 @@ import axios from "axios";
 import "./Budget.css";
 import Navbar from "../LandingPage/Navbar";
 import ExpenseHistory from "./ExpenseHistory"; // Import the new ExpenseHistory component
+import { useNavigate } from "react-router-dom";
 
 const Budget = () => {
   const [showBudgetDialog, setShowBudgetDialog] = useState(false);
@@ -14,6 +15,16 @@ const Budget = () => {
 
   const [showExpenseHistoryModal, setShowExpenseHistoryModal] = useState(false); // New state for the modal
   const [selectedBudgetExpenses, setSelectedBudgetExpenses] = useState([]); // To store selected budget's expenses
+  const [loading, setLoading] = useState(false); // Loading state for processing
+  const navigate = useNavigate();
+  // Check if user is authenticated on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // Redirect to login if no token is found
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const [newBudget, setNewBudget] = useState({
     name: "",
@@ -82,7 +93,7 @@ const Budget = () => {
       description: newExpense.expenseDescription,
       amount: parseFloat(newExpense.expenseAmount),
     };
-
+    setLoading(true); // Start loading
     axios
       .post(
         `http://localhost:8005/auth/budgets/add-expense/${selectedBudgetId}/expenses`,
@@ -108,15 +119,18 @@ const Budget = () => {
         });
 
         setBudgets(updatedBudgets);
+        setLoading(false); // End loading
         closeExpenseDialog();
       })
       .catch((error) => {
+        setLoading(false); // End loading even in case of an error
         if (error.response && error.response.status === 400) {
           alert(error.response.data);
         } else {
           console.error("Error adding expense:", error);
         }
-      });
+      })
+    setLoading(false); // End loading
   };
 
   const deleteBudget = (id) => {
@@ -190,11 +204,14 @@ const Budget = () => {
                   ></div>
                 </div>
                 <div className="summary-actions">
-                  <button
+                  {/* <button
                     className="btn btn-secondary"
                     onClick={() => openExpenseDialog(budget.id)}
                   >
                     Add Expense
+                  </button> */}
+                  <button className="btn btn-secondary" onClick={() => openExpenseDialog(budget.id)} disabled={loading}>
+                    {loading ? "Processing..." : "Add Expense"}
                   </button>
                   <button
                     className="btn btn-secondary"

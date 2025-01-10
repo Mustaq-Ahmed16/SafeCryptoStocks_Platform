@@ -2,12 +2,24 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ApexCharts from "react-apexcharts";
 import "./MarketChart.css"; // Import CSS file
+import { useUser } from '../UserContext'; // Import useUser hook
+import { useNavigate } from "react-router-dom";
 
 const MarketChart = () => {
   const [coinId, setCoinId] = useState("bitcoin"); // Default to Bitcoin
   const [days, setDays] = useState(30); // Default to 30 days
   const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
+  // Check if user is authenticated on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // Redirect to login if no token is found
+      navigate('/login');
+    }
+  }, [navigate]);
 
   // Fetch market chart data
   useEffect(() => {
@@ -118,7 +130,6 @@ const MarketChart = () => {
         <option value={7}>7 Days</option>
         <option value={30}>30 Days</option>
         <option value={90}>90 Days</option>
-        <option value={180}>180 Days</option>
       </select>
 
       {/* Render the MarketChart component */}

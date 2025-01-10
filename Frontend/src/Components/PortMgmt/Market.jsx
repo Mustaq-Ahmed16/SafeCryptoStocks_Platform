@@ -4,6 +4,7 @@ import Navbar from "../LandingPage/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { IoMdTrendingUp, IoMdTrendingDown } from 'react-icons/io';
+import { useNavigate } from "react-router-dom";
 
 const Market = () => {
   const [cryptoData, setCryptoData] = useState([]);
@@ -11,6 +12,15 @@ const Market = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // 10 items per page
+  const navigate = useNavigate();
+  // Check if user is authenticated on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // Redirect to login if no token is found
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const fetchData = async () => {
     try {

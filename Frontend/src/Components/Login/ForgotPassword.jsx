@@ -53,7 +53,7 @@ const ForgotPassword = () => {
         <h2 className='f'>Forgot Password</h2>
         <p className='p'>Enter your email to verify it and proceed to reset your password.</p>
         <form>
-          <div className="input-group">
+          <div className="fg-input-group">
             <input
               type="email"
               placeholder="Email"

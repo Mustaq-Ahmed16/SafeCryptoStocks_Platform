@@ -23,6 +23,9 @@ import { UserProvider } from './Components/UserContext';
 import UnauthorizedPage from './UnauthorizedPage';
 import MarketChart from './Components/PortMgmt/MarketChart';
 import { ResetStateProvider } from './Components/ResetStateProvider';
+import Logout from './Components/Login/Logout';
+
+// import Test from './Components/HomeFolder/Test';
 
 
 
@@ -37,6 +40,8 @@ const App = () => {
             <Route path="/" element={<LandingPage />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} /> {/* Logout route */}
+
 
             {/* Routes requiring ResetStateProvider */}
             <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -54,6 +59,9 @@ const App = () => {
             <Route path="/chart" element={<MarketChart />} />
 
             <Route path="/profile" element={<Profile />} />
+
+            {/* <Route path="/test" element={<Test />} /> */}
+
 
             {/* Catch-all for Unauthorized access */}
             <Route path="/unauthorized" element={<UnauthorizedPage />} />

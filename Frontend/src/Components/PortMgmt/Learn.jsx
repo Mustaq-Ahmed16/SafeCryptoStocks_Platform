@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Learn.css';
 import Navbar from '../LandingPage/Navbar';
+import { useNavigate } from 'react-router-dom';
 
 // Videos array with actual YouTube links and thumbnails
 const videos = {
@@ -159,7 +160,18 @@ const articles = {
 const categories = ['crypto', 'stocks', 'NFTs', 'bitcoin', 'Trading'];
 
 const Learn = ({ initialCategory = 'crypto' }) => {
+
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const navigate = useNavigate();
+
+  // Check if user is authenticated on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // Redirect to login if no token is found
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const handleFilterClick = (category) => {
     setSelectedCategory(category);

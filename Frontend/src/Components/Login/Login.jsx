@@ -10,6 +10,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false); // State to track loading status
   const navigate = useNavigate(); // Initialize navigate
   const { setUserData } = useUser(); // Access setUserData from context
 
@@ -23,6 +24,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);  // Set loading state to true before starting the login process
     try {
       // Validate input using Zod schema
       const validatedData = loginSchema.parse({ email, password });
@@ -61,6 +63,9 @@ const Login = () => {
         console.error('Error during login:', error);
       }
     }
+    finally {
+      setLoading(false); // Set loading to false after the login process finishes
+    }
   };
 
   return (
@@ -69,7 +74,7 @@ const Login = () => {
         <h2>SAFE CRYPTOSTOCKS</h2>
         <h3>Login</h3>
         <form onSubmit={handleLogin}>
-          <div className="input-group">
+          <div className="login-input-group">
             <input
               type="email"
               placeholder="Email"
@@ -81,7 +86,7 @@ const Login = () => {
           </div>
           {errors.email && <p className="error-message">{errors.email}</p>}
 
-          <div className="input-group">
+          <div className="login-input-group">
             <input
               type="password"
               placeholder="Password"
@@ -93,7 +98,16 @@ const Login = () => {
           </div>
           {errors.password && <p className="error-message">{errors.password}</p>}
 
-          <button type="submit" className="login-button">Login</button>
+          <button type="submit" className="login-button" disabled={loading}>
+            {loading ? (
+              <>
+                Processing... <div className="spinner"></div>
+              </>
+            ) : (
+              'Login'
+            )}
+          </button>
+
 
           <p>
             <Link to="/forgot-password" className="forgot-password-link">Forgot Password?</Link>

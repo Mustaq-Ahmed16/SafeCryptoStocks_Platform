@@ -4,6 +4,7 @@ import Navbar from "../LandingPage/Navbar";
 import BuyStock from "./BuyStock";
 import SellStock from "./SellStock";
 import { useUser } from '../UserContext'; // Import useUser hook
+import { useNavigate } from "react-router-dom";
 
 // Edit Portfolio Dialog Component
 const EditPortfolioDialog = ({ portfolio, onUpdate, onClose }) => {
@@ -170,7 +171,15 @@ const PortfolioPage = () => {
   const [isEditing, setIsEditing] = useState(false); // State to track if editing is in progress
   const [isDeleting, setIsDeleting] = useState(false); // State to track if delete dialog is open
   const [selectedPortfolio, setSelectedPortfolio] = useState(null); // Store selected portfolio for editing or deletion
-
+  const navigate = useNavigate();
+  // Check if user is authenticated on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // Redirect to login if no token is found
+      navigate('/login');
+    }
+  }, [navigate]);
   useEffect(() => {
     if (user) {
       fetchPortfolios(user.id); // Use userId from the context

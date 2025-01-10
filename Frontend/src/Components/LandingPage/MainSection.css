@@ -203,7 +203,7 @@ a {
   background-color: antiquewhite;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: 2px;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -258,7 +258,7 @@ a {
   background-color: antiquewhite;
   color: white;
   text-align: center;
-  padding: 20px;
+  padding: 0px;
   position: fixed;
   width: 100%;
   bottom: 0;

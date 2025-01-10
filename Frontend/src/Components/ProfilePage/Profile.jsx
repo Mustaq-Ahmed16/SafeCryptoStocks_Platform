@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useUser } from '../UserContext'; // Import useUser hook
 import './Profile.css';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const { user, setUserData } = useUser(); // Access user context data and setUserData function
@@ -15,6 +16,16 @@ const Profile = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isEditable, setIsEditable] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(true);
+  const navigate = useNavigate();
+
+  // Check if user is authenticated on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // Redirect to login if no token is found
+      navigate('/login');
+    }
+  }, [navigate]);
 
   // Redirect to login if no user is found
   useEffect(() => {
@@ -47,9 +58,8 @@ const Profile = () => {
 
     try {
       const response = await axios.put('http://localhost:8005/auth/update-profile', {
-        id: userId,
+        id: userId,    // Include userId in the request body
         fullName,
-        email,
         address,
         phone,
       }, {
@@ -60,7 +70,9 @@ const Profile = () => {
 
       if (response.data.success) {
         setSuccessMessage('Profile updated successfully!');
-        const updatedUser = { userId, fullName, email, address, phone };
+        // Retrieve the current user object from localStorage
+        const currentUser = JSON.parse(localStorage.getItem('user'));
+        const updatedUser = { ...currentUser, fullName, address, phone };
         localStorage.setItem('user', JSON.stringify(updatedUser));
         setUserData(updatedUser);
       } else {
@@ -73,7 +85,7 @@ const Profile = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    window.location.href = '/portfolio';
+    window.location.href = '/learn';
   };
 
   return (
@@ -83,11 +95,10 @@ const Profile = () => {
           <div className="modal-content">
             <h2>User Profile</h2>
 
-            {/* Display User ID */}
+            {/* Display User ID and Email as static text */}
             <div className="user-id">
               <p>User Profile Id: {userId}</p>
             </div>
-            {/* Display Email ID */}
             <div className="user-id">
               <p>User Email Id: {email}</p>
             </div>
@@ -102,8 +113,6 @@ const Profile = () => {
                   disabled={!isEditable}
                 />
               </div>
-
-
 
               <div className="input-group">
                 <label>Address</label>

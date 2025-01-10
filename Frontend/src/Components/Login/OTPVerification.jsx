@@ -69,7 +69,7 @@ const OTPVerification = () => {
         <h2>OTP Verification</h2>
         <p>Enter the OTP sent to your email to verify your account.</p>
         <form onSubmit={handleVerifyOTP}>
-          <div className="input-group">
+          <div className="otp-input-group">
             <input
               type="text"
               placeholder="Enter OTP"

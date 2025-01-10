@@ -5,6 +5,7 @@ import { AiOutlineFire } from 'react-icons/ai';
 import { IoMdTrendingUp, IoMdTrendingDown } from 'react-icons/io';
 import { BiNews } from 'react-icons/bi';
 import { useUser } from '../UserContext'; // Import useUser hook
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const { user } = useUser(); // Access user data from context
@@ -12,6 +13,15 @@ const Dashboard = () => {
   const [trendingCoins, setTrendingCoins] = useState([]);
   const [topCoins, setTopCoins] = useState([]);
   const [cryptoNews, setCryptoNews] = useState([]); // New state for news
+  const navigate = useNavigate();
+  // Check if user is authenticated on component mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      // Redirect to login if no token is found
+      navigate('/login');
+    }
+  }, [navigate]);
 
   useEffect(() => {
     fetchTrendingCoins();

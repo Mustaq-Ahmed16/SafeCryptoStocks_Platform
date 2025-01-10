@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,6 +31,9 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     
     private final AuthenticationManager authenticationManager;
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;  // Optional service to handle blacklisting tokens
+
 
     public AuthenticationService(
         UserRepository userRepository,
@@ -103,50 +107,18 @@ public class AuthenticationService {
         // Save updated user
         return userRepository.save(user);
     }
-
-    
-//    public User updateUserProfile(Integer userId, String fullName, String address, String phoneNumber, String photoUrl) {
-//    	if (userId == null) {
-//            throw new IllegalArgumentException("User ID cannot be null at service");
-//        }
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
-//
-//        // Update fields if they are not null or empty
-//        if (fullName != null && !fullName.isEmpty()) {
-//            user.setFullName(fullName);
-//        }
-//        if (address != null && !address.isEmpty()) {
-//            user.setAddress(address);
-//        }
-//        if (phoneNumber != null && !phoneNumber.isEmpty()) {
-//            user.setPhone(phoneNumber);
-//        }
-//        if (photoUrl != null && !photoUrl.isEmpty()) {
-//            user.setPhotoUrl(photoUrl);
-//        }
-//
-//        // Save updated user
-//        return userRepository.save(user);
-//    }
+    public void invalidateToken(String token) {
+        try {
+            // Optional: Blacklist the token (e.g., by adding it to a Redis database)
+            tokenBlacklistService.addToBlacklist(token); // This will invalidate the token from further use
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to invalidate token", e);
+        }
+    }
 
 
-
-    
 }
         
-        
-        
-//        authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        input.getEmail(),
-//                        input.getPassword()
-//                )
-//        );
-//
-//        return userRepository.findByEmail(input.getEmail())
-//                .orElseThrow();
-//    }
-    
+
 
 
